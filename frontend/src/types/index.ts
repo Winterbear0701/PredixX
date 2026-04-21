@@ -47,3 +47,11 @@ export interface SimulationResult {
   predicted_revenue_change: number;
   csv_download_url: string;
 }
+
+export interface Store {
+  id: number;
+  name: string;
+  api_key: string;
+  created_at: string;
+  updated_at?: string;
+}

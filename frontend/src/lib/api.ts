@@ -1,3 +1,5 @@
+import type { Product, PriceChangeLog, PriceRecommendation, Store } from '@/types';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
 class ApiClient {
@@ -67,7 +69,7 @@ class ApiClient {
   }
 
   // Products endpoints
-  async getProducts(params: { limit?: number; skip?: number; store_id?: number; sku?: string } = {}) {
+  async getProducts(params: { limit?: number; skip?: number; store_id?: number; sku?: string } = {}): Promise<Product[]> {
     const queryParams = new URLSearchParams();
     if (params.limit) queryParams.append('limit', String(params.limit));
     if (params.skip) queryParams.append('skip', String(params.skip));
@@ -75,7 +77,7 @@ class ApiClient {
     if (params.sku) queryParams.append('sku', params.sku);
     
     const query = queryParams.toString();
-    return this.request(`/products${query ? `?${query}` : ''}`);
+    return this.request<Product[]>(`/products${query ? `?${query}` : ''}`);
   }
 
   async createProduct(data: any) {
@@ -103,8 +105,8 @@ class ApiClient {
   }
 
   // Stores endpoints
-  async getStores() {
-    return this.request('/stores');
+  async getStores(): Promise<Store[]> {
+    return this.request<Store[]>('/stores');
   }
 
   async createStore(data: { name: string; api_key: string }) {
@@ -132,8 +134,8 @@ class ApiClient {
   }
 
   // Pricing endpoints
-  async getPriceRecommendation(productId: number) {
-    return this.request('/price/recommend', {
+  async getPriceRecommendation(productId: number): Promise<PriceRecommendation> {
+    return this.request<PriceRecommendation>('/price/recommend', {
       method: 'POST',
       body: JSON.stringify({ product_id: productId }),
     });
@@ -154,14 +156,14 @@ class ApiClient {
   }
 
   // Logs endpoints
-  async getPriceChangeLogs(params: { limit?: number; skip?: number; product_id?: number } = {}) {
+  async getPriceChangeLogs(params: { limit?: number; skip?: number; product_id?: number } = {}): Promise<PriceChangeLog[]> {
     const queryParams = new URLSearchParams();
     if (params.limit) queryParams.append('limit', String(params.limit));
     if (params.skip) queryParams.append('skip', String(params.skip));
     if (params.product_id) queryParams.append('product_id', String(params.product_id));
     
     const query = queryParams.toString();
-    return this.request(`/logs/price-changes${query ? `?${query}` : ''}`);
+    return this.request<PriceChangeLog[]>(`/logs/price-changes${query ? `?${query}` : ''}`);
   }
 
   // ML endpoints

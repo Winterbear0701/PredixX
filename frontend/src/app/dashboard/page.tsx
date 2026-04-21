@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/api';
+import type { Product, PriceChangeLog } from '@/types';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
@@ -9,7 +10,7 @@ export default function DashboardPage() {
     avgPrice: 0,
     recentChanges: 0,
   });
-  const [logs, setLogs] = useState<any[]>([]);
+  const [logs, setLogs] = useState<PriceChangeLog[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function DashboardPage() {
       setStats({
         totalProducts: products.length,
         avgPrice: products.length > 0 
-          ? products.reduce((sum: number, p: any) => sum + p.current_price, 0) / products.length 
+          ? products.reduce((sum: number, p: Product) => sum + p.current_price, 0) / products.length 
           : 0,
         recentChanges: logsData.length,
       });
@@ -139,7 +140,7 @@ export default function DashboardPage() {
                         Product #{log.product_id}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {new Date(log.timestamp).toLocaleDateString()}
+                        {new Date(log.created_at).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="flex justify-between mt-1">
